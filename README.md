@@ -1,6 +1,6 @@
 ## Simple Install
 
-1. Go to config/twilio.php, complete all credentials.
+1. Go to config/twilio.php, complete all credentials. and create an .env file
 2. php artisan migrate
 3. php artisan passport:install
 4. POST `/api/register` - register an account and copy token
