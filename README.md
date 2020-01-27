@@ -32,7 +32,9 @@ Located at `tests/Feature/VerificationTest`
 
 - In the given requirement, the user is not required to send phone number again to verify code, so I put phone number in Cache and bind it to User ID.
 - Using Bearer token for API authorization.
-
+- Assuming send SMS verification is `POST api/v1/verification`
+- Assuming Verify Code URI is `GET /api/v1/verification/{code}`
+                             
 ## Some useful packages for future improvements
 
 - Official Twilio Laravel demo project: https://github.com/TwilioDevEd/verify-v2-quickstart-php
