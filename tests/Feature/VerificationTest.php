@@ -51,7 +51,7 @@ class VerificationTest extends TestCase
         $res->assertStatus(400)
             ->assertJson(
                 [
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'failed'
                 ]
             );
@@ -115,7 +115,7 @@ class VerificationTest extends TestCase
             );
 
         $res = $this->actingAs($user)
-            ->get('/api/v1/verification/123456');
+            ->post('/api/v1/verification-code', ['code' => '123456']);
 
         $res->assertStatus(200)
             ->assertJson(
@@ -126,18 +126,17 @@ class VerificationTest extends TestCase
     }
 
 
-
     public function testVerifyNoPhoneNumber()
     {
         $user = factory(User::class)->make();
 
         $res = $this->actingAs($user)
-            ->get('/api/v1/verification/123456');
+            ->post('/api/v1/verification-code', ['code' => '123456']);
 
         $res->assertStatus(400)
             ->assertJson(
                 [
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'No phone number.',
                 ]
             );
