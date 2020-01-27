@@ -30,7 +30,7 @@ class PhoneVerificationApiController extends Controller
         if ($res->isError()) {
             return JsonResponse::create(
                 [
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => $res->getErrorMessage()
                 ],
                 400
@@ -51,7 +51,7 @@ class PhoneVerificationApiController extends Controller
     }
 
 
-    public function verifyCode(VerifyCodeRequest $verifyCodeRequest, $code)
+    public function verifyCode(VerifyCodeRequest $verifyCodeRequest)
     {
         $verifyCodeRequest->validated();
 
@@ -62,20 +62,20 @@ class PhoneVerificationApiController extends Controller
         if (empty($phoneNumber)) {
             return JsonResponse::create(
                 [
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'No phone number.'
                 ],
                 400
             );
         }
 
-        $res = Twilio::verifyCode($code, $phoneNumber);
+        $res = Twilio::verifyCode($verifyCodeRequest->input('code'), $phoneNumber);
         Cache::pull($key);
 
         if ($res->isError()) {
             return JsonResponse::create(
                 [
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => $res->getErrorMessage()
                 ],
                 400

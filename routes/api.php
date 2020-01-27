@@ -22,19 +22,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-
-
 Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function () {
-    Route::group(['prefix' => 'verification'], function () {
-        Route::post('', [
-            'uses' => 'PhoneVerificationApiController@sendCode',
-            'as' => 'verification.sendCode',
-        ]);
 
-        Route::get('/{code}', [
-            'uses' => 'PhoneVerificationApiController@verifyCode',
-            'as' => 'verification.verifyCode',
-        ]);
+    Route::post('verification', [
+        'uses' => 'PhoneVerificationApiController@sendCode',
+        'as'   => 'verification.sendCode',
+    ]);
 
-    });
+    Route::get('verification-code', [
+        'uses' => 'PhoneVerificationApiController@verifyCode',
+        'as'   => 'verification.verifyCode',
+    ]);
+
 });

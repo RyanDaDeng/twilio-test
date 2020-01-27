@@ -24,6 +24,11 @@ class VerifyCodeRequest extends AbstractApiFormRequest
     {
         return [
             //
+            'code' => [
+                'required',
+                'string',
+                'digits:6'
+            ]
         ];
     }
 }
