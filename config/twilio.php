@@ -7,6 +7,6 @@ return [
     'AUTH_TOKEN'            => env('TWILIO_AUTH_TOKEN', ''),
     'SENDER_NUMBER'         => env('TWILIO_SENDER_NUMBER', ''),
     'VERIFICATION_SERVICES' => [
-        'MY_APP' => ''
+        'MY_APP' => env('TWILIO_VERIFICATION_SERVICE','')
     ]
 ];
