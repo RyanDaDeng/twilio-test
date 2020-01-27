@@ -29,7 +29,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function () {
         'as'   => 'verification.sendCode',
     ]);
 
-    Route::get('verification-code', [
+    Route::post('verification-code', [
         'uses' => 'PhoneVerificationApiController@verifyCode',
         'as'   => 'verification.verifyCode',
     ]);
