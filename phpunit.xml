@@ -33,5 +33,10 @@
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+
+
+        <server name="TWILIO_ACCOUNT_SID" value="1"/>
+        <server name="TWILIO_AUTH_TOKEN" value="1"/>
+        <server name="TWILIO_VERIFY_SID" value="1"/>
     </php>
 </phpunit>
