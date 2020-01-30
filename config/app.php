@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        \App\Services\Twilio\Providers\TwilioServiceProvider::class,
+        # App\Services\Twilio\Providers\TwilioServiceProvider::class,
 
     ],
 
@@ -227,7 +227,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        \App\Services\Twilio\Facades\Twilio::SERVICE_NAME => \App\Services\Twilio\Facades\Twilio::class
+        # 'TwilioVerificationService' => Facades\App\Services\Twilio\Services\TwilioVerificationService::class,
 
     ],
 

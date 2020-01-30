@@ -24,6 +24,11 @@ class VerifyCodeRequest extends AbstractApiFormRequest
     {
         return [
             //
+           'phone_number' => [
+                'string',
+                'min:11',
+                'required'
+            ],
             'code' => [
                 'required',
                 'string',

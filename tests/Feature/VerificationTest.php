@@ -4,11 +4,10 @@
 namespace Tests\Feature;
 
 
-use App\Services\Twilio\Facades\Twilio;
+use Facades\App\Services\Twilio\Services\TwilioVerificationService;
 use App\Services\Twilio\Response\TwilioResponse;
 use App\User;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class VerificationTest extends TestCase
@@ -31,7 +30,7 @@ class VerificationTest extends TestCase
     {
         $user = factory(User::class)->make();
 
-        Twilio::shouldReceive('sendVerificationCode')
+        TwilioVerificationService::shouldReceive('sendVerificationCode')
             ->with('+61404157872')
             ->once()
             ->andReturn(
@@ -47,7 +46,6 @@ class VerificationTest extends TestCase
                     'phone_number' => '+61404157872'
                 ]
             );
-
         $res->assertStatus(400)
             ->assertJson(
                 [
@@ -55,9 +53,6 @@ class VerificationTest extends TestCase
                     'message' => 'failed'
                 ]
             );
-
-        $number = Cache::get('user_verification_' . $user->id);
-        $this->assertEquals(null, $number);
     }
 
 
@@ -65,7 +60,7 @@ class VerificationTest extends TestCase
     {
         $user = factory(User::class)->make();
 
-        Twilio::shouldReceive('sendVerificationCode')
+        TwilioVerificationService::shouldReceive('sendVerificationCode')
             ->with('+61404157872')
             ->once()
             ->andReturn(
@@ -85,9 +80,6 @@ class VerificationTest extends TestCase
                     'status' => 'success',
                 ]
             );
-
-        $number = Cache::get('user_verification_' . $user->id);
-        $this->assertEquals('+61404157872', $number);
     }
 
 
@@ -95,19 +87,7 @@ class VerificationTest extends TestCase
     {
         $user = factory(User::class)->make();
 
-        Cache::shouldReceive('get')
-            ->with('user_verification_' . $user->id)
-            ->once()
-            ->andReturn(
-                '+61404157872'
-            );
-
-        Cache::shouldReceive('pull')
-            ->with('user_verification_' . $user->id)
-            ->once()
-            ->andReturn(true);
-
-        Twilio::shouldReceive('verifyCode')
+        TwilioVerificationService::shouldReceive('verifyCode')
             ->with('123456', '+61404157872')
             ->once()
             ->andReturn(
@@ -115,7 +95,7 @@ class VerificationTest extends TestCase
             );
 
         $res = $this->actingAs($user)
-            ->post('/api/v1/verification-code', ['code' => '123456']);
+            ->post('/api/v1/verification-code', ['code' => '123456', 'phone_number' => '+61404157872']);
 
         $res->assertStatus(200)
             ->assertJson(
@@ -133,11 +113,12 @@ class VerificationTest extends TestCase
         $res = $this->actingAs($user)
             ->post('/api/v1/verification-code', ['code' => '123456']);
 
-        $res->assertStatus(400)
+        $res->assertStatus(422)
             ->assertJson(
                 [
-                    'status'  => 'error',
-                    'message' => 'No phone number.',
+                    'errors' => [
+                        'phone_number' => ['The phone number field is required.']
+                     ]
                 ]
             );
     }

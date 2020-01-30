@@ -8,18 +8,14 @@
 
 namespace App\Services\Twilio\Providers;
 
-
-use App\Services\Twilio\Config\TwilioConfig;
-use App\Services\Twilio\Config\TwilioConfigInterface;
-use App\Services\Twilio\Facades\Twilio;
-use App\Services\Twilio\Services\TwilioVerificationService;
+use Facades\App\Services\Twilio\Services\TwilioVerificationService;
 use Carbon\Laravel\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use Twilio\Rest\Client;
 
 class TwilioServiceProvider extends ServiceProvider implements DeferrableProvider
 {
 
+    public const SERVICE_NAME = 'TwilioVerificationService';
 
     /**
      * Register any application services.
@@ -28,16 +24,8 @@ class TwilioServiceProvider extends ServiceProvider implements DeferrableProvide
      */
     public function register()
     {
-        $this->app->bind(
-            TwilioConfigInterface::class,
-            TwilioConfig::class
-        );
-
-
-        $this->app->bind(Twilio::SERVICE_NAME, function () {
-            $config = app(TwilioConfigInterface::class);
-            $client = new Client($config->getSID(), $config->getAuthToken());
-            return new TwilioVerificationService($client, app(TwilioConfigInterface::class));
+        $this->app->bind(self::SERVICE_NAME, function () {
+            return new TwilioVerificationService();
         });
     }
 
@@ -48,7 +36,6 @@ class TwilioServiceProvider extends ServiceProvider implements DeferrableProvide
      */
     public function provides()
     {
-        return [Twilio::SERVICE_NAME];
+        return [self::SERVICE_NAME];
     }
-
 }
