@@ -3,10 +3,7 @@
 use Illuminate\Support\Str;
 
 return [
-    'SID'                   => env('TWILIO_SID', ''),
-    'AUTH_TOKEN'            => env('TWILIO_AUTH_TOKEN', ''),
-    'SENDER_NUMBER'         => env('TWILIO_SENDER_NUMBER', ''),
-    'VERIFICATION_SERVICES' => [
-        'MY_APP' => env('TWILIO_VERIFICATION_SERVICE','')
-    ]
+    'TWILIO_ACCOUNT_SID' => env('TWILIO_ACCOUNT_SID'),
+    'TWILIO_AUTH_TOKEN'  => env('TWILIO_AUTH_TOKEN'),
+    'TWILIO_VERIFY_SID'  => env('TWILIO_VERIFY_SID'),
 ];

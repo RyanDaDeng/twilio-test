@@ -3,10 +3,9 @@
 1. composer install -vvv && php artisan key:generate
 2. Go to config/twilio.php, complete all credentials.
     ````
-    TWILIO_SID=
-    TWILIO_AUTH_TOKEN=
-    TWILIO_SENDER_NUMBER=
-    TWILIO_VERIFICATION_SERVICE=
+      TWILIO_ACCOUNT_SID=
+      TWILIO_AUTH_TOKEN"=
+      TWILIO_VERIFY_SID=
     ````
 3. `php artisan migrate`
 4. `php artisan passport:install`
@@ -27,13 +26,6 @@ Located at `Services/Twilio`
 
 Located at `tests/Feature/VerificationTest`
 
-
-## Assumptions
-
-- In the given requirement, the user is not required to send phone number again to verify code, so I put phone number in Cache and bind it to User ID.
-- Using Bearer token for API authorization.
-- Assuming send SMS verification is `POST api/v1/verification`
-- Assuming Verify Code URI is `POST /api/v1/verificatio-code`
                              
 ## Some useful packages for future improvements
 

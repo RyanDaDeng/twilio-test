@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\Twilio\Services;
 
-use App\Services\Twilio\Config\TwilioConfigInterface;
 use App\Services\Twilio\Response\TwilioResponse;
 use Illuminate\Support\Facades\Log;
 use Twilio\Exceptions\TwilioException;
@@ -16,55 +15,47 @@ use Twilio\Rest\Client;
  */
 class TwilioVerificationService
 {
-    /**
-     * @var Client $client
-     */
-    private $client;
+
     /**
      * @var string $verificationServiceSid
      */
     private $verificationServiceSid;
 
     /**
-     * @var TwilioConfigInterface $config
+     * Twilio Account SID
+     *
+     * @var String
      */
-    private $config;
+    public $twilioSid;
+
+    /**
+     * Twilio Auth Token
+     *
+     * @var String
+     */
+    public $twilioToken;
+
+    /**
+     * Twilio Verify SID
+     *
+     * @var String
+     */
+    public $verifySid;
 
     /**
      * TwilioVerificationService constructor.
      * @param Client $client
-     * @param TwilioConfigInterface $twilioConfig
      */
-    public function __construct(
-        Client $client,
-        TwilioConfigInterface $twilioConfig
-    )
+    public function __construct()
     {
-        $this->config = $twilioConfig;
-        $this->client = $client;
-        $this->verificationServiceSid = $this->setVerificationServiceByConfig();
+
+        $this->twilioSid = config('twilio.TWILIO_ACCOUNT_SID');
+        $this->twilioToken = config('twilio.TWILIO_AUTH_TOKEN');
+        $this->verifySid = config('twilio.TWILIO_VERIFY_SID');
+
+        $this->verificationService = new Client($this->twilioSid, $this->twilioToken);
     }
 
-
-    /**
-     * @param string|null $serviceKey
-     * @return string
-     */
-    public function setVerificationServiceByConfig(string $serviceKey = null): string
-    {
-        $this->verificationServiceSid = $this->config->getVerificationSid($serviceKey);
-        return $this->verificationServiceSid;
-    }
-
-    /**
-     * @param string $sid
-     * @return TwilioVerificationService
-     */
-    public function setVerificationServiceId(string $sid): self
-    {
-        $this->verificationServiceSid = $sid;
-        return $this;
-    }
 
     /**
      * @param string $number
@@ -78,10 +69,10 @@ class TwilioVerificationService
 
         try {
             $verification = $this
-                ->client
+                ->verificationService
                 ->verify
                 ->v2
-                ->services($this->verificationServiceSid)
+                ->services($this->verifySid)
                 ->verifications
                 ->create($number, $channel);
 
@@ -115,10 +106,10 @@ class TwilioVerificationService
 
         try {
             $validation = $this
-                ->client
+                ->verificationService
                 ->verify
                 ->v2
-                ->services($this->verificationServiceSid)
+                ->services($this->verifySid)
                 ->verificationChecks
                 ->create(
                     $code,
@@ -143,41 +134,6 @@ class TwilioVerificationService
                 )
                 ->setIsError(true)
                 ->setErrorMessage('Invalid code.');
-
-        } catch (TwilioException $exception) {
-            Log::error($exception->getMessage());
-            return $response
-                ->setIsError(true)
-                ->setErrorMessage($exception->getMessage());
-        } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
-            return $response
-                ->setIsError(true)
-                ->setErrorMessage($exception->getMessage());
-        }
-    }
-
-    /**
-     * @param $serviceName
-     * @return TwilioResponse
-     */
-    public function createVerificationService(string $serviceName): TwilioResponse
-    {
-
-        $response = TwilioResponse::create();
-        try {
-            $service = $this
-                ->client
-                ->verify
-                ->v2
-                ->services
-                ->create($serviceName);
-
-            return $response
-                ->setRawResponse(
-                    $service->toArray()
-                )
-                ->setResponseSid($service->sid);
 
         } catch (TwilioException $exception) {
             Log::error($exception->getMessage());
